@@ -1,0 +1,25 @@
+#BlueJ class context
+comment0.target=Ship
+comment1.params=l
+comment1.target=Ship(int)
+comment10.params=page
+comment10.target=void\ draw(java.awt.Graphics)
+comment11.params=page
+comment11.target=void\ drawMini(java.awt.Graphics)
+comment2.params=
+comment2.target=Ship()
+comment3.params=
+comment3.target=void\ snapLoc()
+comment4.params=
+comment4.target=void\ setStartLoc()
+comment5.params=
+comment5.target=int\ getLength()
+comment6.params=
+comment6.target=Location\ getLoc()
+comment7.params=next
+comment7.target=boolean\ overlapsWith(Location)
+comment8.params=x\ y
+comment8.target=void\ move(int,\ int)
+comment9.params=
+comment9.target=void\ changeState()
+numComments=12
