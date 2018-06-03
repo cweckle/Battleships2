@@ -1,5 +1,4 @@
 //Last Changed 6/3/2018
-//take oou inbounds shenanigan again
 
 import javax.swing.*;
 import java.awt.*;
