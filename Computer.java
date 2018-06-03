@@ -17,7 +17,7 @@ public class Computer extends Player{
         for(int i = 0; i < Player.NUMSHIPS; i ++){
             int x = (int)(Math.random()*((11-getShip(i).getLength())*Board.SIDE))+Board.LEFT;
             int y = (int)(Math.random()*(Board.NUM_COLS*Board.SIDE))+Board.TOP;
-            while(overlap(new Location(x,y))){
+            while(shipOverlap(new Location(x,y),i+1)){
                 x = (int)(Math.random()*((11-getShip(i).getLength())*Board.SIDE))+Board.LEFT;
                 y = (int)(Math.random()*(Board.NUM_COLS*Board.SIDE))+Board.TOP;
                 System.out.println("change");

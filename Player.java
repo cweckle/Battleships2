@@ -19,7 +19,7 @@ public class Player{
     }
     
     public void createLocs(){
-        System.out.println("hi");
+        locs = new ArrayList<Location>();
         for(Ship next : ships){
             if(next.getLoc().inBounds()){
             String x = next.getLoc().getGridX();
@@ -29,7 +29,7 @@ public class Player{
             }
         }
         }
-        System.out.println(locs.size());
+        System.out.println();
         setInBounds();
     }
     
@@ -48,7 +48,7 @@ public class Player{
         // for(Location loc : locs)
             // if(loc.equals(next))
                 // return true;
-        if(overlap(next))
+        if(pointOverlap(next))
             return true;
         return false;
     }
@@ -97,16 +97,9 @@ public class Player{
             ships[i].drawMini(page);
         }
     }
-    
-    public boolean canMove(Location next){
-        if(!overlap(next))
-            return false;
-  
-        return true;
-    }
 
     public boolean move(int x, int y){
-        if(!overlap(new Location(x,y))){
+        if(!shipOverlap(new Location(x,y), clicked.getLength())){
             clicked.move(x,y);
             return false;
         }
@@ -124,11 +117,38 @@ public class Player{
         if(overlaps)
             clicked = ships[num-1];
     }
-
-    public boolean overlap(Location next){
+    
+    public boolean shipOverlap(Location next, int length){
         if(!next.inBounds())
             return false;
-        for(int i = 0; i < ships.length; i++){
+        createLocs();
+        System.out.println("ship overlapppppp");
+        String x = next.getGridX();
+        int y = next.getGridY();
+        System.out.println(new Location(x,y));
+        int k = 0;
+        while(k < length){
+            // if(pointOverlap(next))
+                // return true;
+            // x = Location.increment(x);
+            // System.out.println("wheer arej we ninow " + x);
+            // k++;
+            for(Location check : locs)
+                if(check.equals(new Location(x,y))){
+                    System.out.println("why");
+                    return true;
+                }
+            k++;
+            x = Location.increment(x);
+        }
+        System.out.println("made it");
+        return false;
+    }
+
+    public boolean pointOverlap(Location next){
+        if(!next.inBounds())
+            return false;
+            for(int i = 0; i < ships.length; i++){
             String storedX = ships[i].getLoc().getGridX();
             int storedY = ships[i].getLoc().getGridY();
             if(next.getGridY() == storedY){

@@ -133,8 +133,7 @@ public class Game extends JPanel implements MouseListener,ActionListener
                 selected = true;
             }
             else{
-                player.move(x, y);
-                selected = false;
+                selected = player.move(x, y);
             }
         }
         else if(clicked.inBounds()){
