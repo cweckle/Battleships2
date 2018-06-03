@@ -5,12 +5,40 @@ import java.awt.event.*;
 
 public class Computer extends Player{
     private ArrayList<Marker> computerMarkers = new ArrayList<Marker>();
-    private String lastXSpot = "";
-    private int lastYSpot = -10;
+    private int lastXSpot;
+    private Location lastLocation;
+    private int lastYSpot;
+    private int[] spotsHit;
+    private ArrayList <Spot> hitSpots = new ArrayList<Spot>();
+    private int direction;
 
     public Computer(){
         super();
         randomize();
+        lastYSpot = -10;
+        lastXSpot = -10;
+        spotsHit = new int[5];
+        direction = 0;
+    }
+
+    public int getLastXSpot()
+    {
+        return lastXSpot;
+    }
+
+    public int getLastYSpot()
+    {
+        return lastYSpot;
+    }
+
+    public int getDirection()
+    {
+        return direction;
+    }
+
+    public void setDirection(int n)
+    {
+        direction = n;
     }
 
     public void randomize(){
@@ -26,122 +54,75 @@ public class Computer extends Player{
         }
         createLocs();
     }
-    
-    // public void placeHit(String x, int y)
-    // {
-        // computerMarkers.add(new Marker(true, x,y));
-    // }
 
-    // public void guess()
-    // {
-        // //check if the guessed place has hit something
-        // boolean haveHit = false;
-        // boolean sunkThisShip = false;
-        // ArrayList <Spot> hitSpots = new ArrayList<Spot>();
-        // while (haveHit == false || sunkThisShip == true)
-        // {
-            // boolean drop = false;
-            // String xSpot = "";
-            // int ySpot = 0;
+    public void placeHit(int x, int y)
+    {
+        computerMarkers.add(new Marker(true, x,y));
+    }
 
+    public Location guess(int xPlace, int yPlace, int direc)
+    {
+        int xGuess = 0;
+        if(direc == 1)
+        {
+            xGuess = xPlace + 60;
+        }
+        else if (direc == -1)
+        {
+            xGuess = xPlace - 60;
+        }
+        else if (direc == 0)
+        {
+            guess(xPlace, yPlace);
+        }
+        for(int i = 0; i < hitSpots.size(); i++)
+        {
+            if(hitSpots.get(i).equals(new Spot(yPlace, Location.convertIntX(xPlace))))
+            {
+                i = hitSpots.size();
+                guess(xPlace, yPlace);
+            }
+            else
+            {
+                hitSpots.add(new Spot(yPlace, Location.convertIntX(xPlace)));
+                lastXSpot = xPlace;
+                lastYSpot = yPlace;
+            }
+        }
+        return new Location(xGuess, yPlace);
+    }
 
-            // if(lastXSpot.equals("") && lastYSpot == -10)
-            // {
-                // while (!drop)
-                // {
-                    // xSpot = Ship.convertIntX((int)(Math.random()* 600+20));
-                    // ySpot = Ship.convertToGridY((int)(Math.random()*600+150));
-                    // placeHit(xSpot,ySpot);
-                // }
-            // }
-            // else
-            // { 
-                // while (!drop)
-                // {
-                    // int round = 0;
-                    // for (int i = round; i <10; i+=4) //col x
-                    // {
-                        // for(int r = round; r <10; r+= 4) //row y
-                        // {
-                            // xSpot =  Ship.convertIntX(i);
-                            // ySpot = r;
-                            // placeHit(xSpot,ySpot);
-                        // }
-                        // round ++;
-                    // }
-                // }
-            // }
-            // for(int i = 0; i < hitSpots.size(); i++)
-            // {
-                // if(hitSpots.get(i).equals(new Spot(ySpot, xSpot)))
-                // {
-                    // i = hitSpots.size();
-                // }
-                // else
-                // {
-                    // hitSpots.add(new Spot(ySpot, xSpot));
-                    // lastXSpot = xSpot;
-                    // lastYSpot = ySpot;
-                    // drop = true;
-                    // if(overlap(Ship.getColVal(xSpot), ySpot) == true)
-                    // {
-                        // haveHit = true;
-                    // }
-                    // //check to see what happens when you drop the bomb here
-                    // //and check to see if haveHit will be true
-                    // //something needs to call this method guess
-                // }
-            // }
-        // }
-        // while(haveHit == true && sunkThisShip == false)
-        // {
-            // int xValue = 0;
-            // int direction = 1;
-            // if(direction == 1)
-            // {
-                // xValue = Ship.getColVal(lastXSpot) + 60;
-                // placeHit(Ship.convertIntX(xValue), lastYSpot);
-                // if(overlap(xValue,lastYSpot) == false)
-                // {
-                    // direction = -1;
-                    // //check if entire ship has sunk
-                    // //check if the entire ship has sunk
-                // }
-            // }
-            // else if (direction == -1)
-            // {
-                // xValue = Ship.getColVal(lastXSpot) - 60;
-                // placeHit(Ship.convertIntX(xValue), lastYSpot);
-                // if(overlap(xValue,lastYSpot) == false)
-                // {
-                    // direction = 1;
-                    // //check if this place has already been bombed
-                    // //check if entire ship has sunk
-                // }
-            // }
-            // for(int i = 0; i < hitSpots.size(); i++)
-            // {
-                // if(hitSpots.get(i).equals(new Spot(lastYSpot, Ship.convertIntX(xValue))))
-                // {
-                    // i = hitSpots.size();
-                // }
-                // else
-                // {
-                    // hitSpots.add(new Spot(lastYSpot, Ship.convertIntX(xValue)));
-                    // lastXSpot = Ship.convertIntX(xValue);
-                    // //drop = true;
-                    // if(overlap(xValue, lastYSpot) == true)
-                    // {
-                        // haveHit = true;
-                    // }
-                    // //check to see what happens when you drop the bomb here
-                    // //and check to see if haveHit will be true
-                    // //something needs to call this method guess
-                // }
-            // }
+    public Location guess(int xPlace, int yPlace) //the parameters are the last place it guessed
+    {
+        int xSpot = 0;
+        int ySpot = 0;
+        if(xPlace == -10 && lastYSpot == -10)
+        {
+            xSpot = (int)(Math.random()*600+20);
+            ySpot = (int)(Math.random()*600+150);
+            hitSpots.add(new Spot(ySpot, Location.convertIntX(xSpot)));
+        }
+        else
+        { 
+            xSpot =  (lastXSpot+240)%1000;
+            ySpot = (lastYSpot+240)%800;
+        }
 
-            // //need to check if you have sunk the entire ship
-        // }
-    // }
+        for(int i = 0; i < hitSpots.size(); i++)
+        {
+            if(hitSpots.get(i).equals(new Spot(ySpot, Location.convertIntX(xSpot))))
+            {
+                i = hitSpots.size();
+                guess(xPlace+40, yPlace+60);
+            }
+            else
+            {
+                hitSpots.add(new Spot(ySpot, Location.convertIntX(xSpot)));
+                lastXSpot = xSpot;
+                lastYSpot = ySpot;
+            }
+        }
+        return new Location(xSpot, yPlace);
+    }
+} 
 
-}
