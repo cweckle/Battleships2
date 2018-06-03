@@ -67,6 +67,14 @@ public class Location{
         return gridY;
     }
 
+    public boolean inBounds(){
+        return inBounds;
+    }
+
+    public void setInBounds(){
+        inBounds = checkBounds();
+    }
+
     public boolean checkBounds(){
         if(gridY == -1 || gridX == null)
             return false;
