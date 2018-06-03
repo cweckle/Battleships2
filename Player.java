@@ -21,7 +21,7 @@ public class Player{
     public void createLocs(){
         locs = new ArrayList<Location>();
         for(Ship next : ships){
-            if(next.getLoc().inBounds()){
+            if(next.getLoc().checkBounds()){
             String x = next.getLoc().getGridX();
             for(int i = 0; i < next.getLength(); i ++){
                 locs.add(new Location(x, next.getLoc().getGridY()));
@@ -30,12 +30,11 @@ public class Player{
         }
         }
         System.out.println();
-        setInBounds();
     }
     
     public boolean outOfBounds(){
         for(Ship next : ships)
-            if(!next.getLoc().inBounds())
+            if(!next.getLoc().checkBounds())
                 return true;
         return false;
     }
@@ -52,11 +51,6 @@ public class Player{
             return true;
         return false;
     }
-    
-    public void setInBounds(){
-        for(Ship next : ships)
-            next.getLoc().setInBounds();
-        }
     
     public void snapTo(){
         for(Ship next : ships)
@@ -146,7 +140,7 @@ public class Player{
     }
 
     public boolean pointOverlap(Location next){
-        if(!next.inBounds())
+        if(!next.checkBounds())
             return false;
             for(int i = 0; i < ships.length; i++){
             String storedX = ships[i].getLoc().getGridX();

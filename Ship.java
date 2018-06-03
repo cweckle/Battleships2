@@ -67,7 +67,7 @@ public class Ship{
     }
     
     public void draw( Graphics page ){
-        if(loc.inBounds())
+        if(loc.checkBounds())
             loc.snapTo();
         
         if (selected){

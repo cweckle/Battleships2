@@ -3,8 +3,16 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.event.*;
 
-public class Game extends JPanel implements MouseListener,ActionListener
+public class Game extends JPanel implements MouseListener,ActionListener,KeyListener
 {
+    public static String TEXT = "DONE PLACING YOUR SHIPS?";
+    public static String COMPTURN = "The computer is guessing now.";
+    public static String YOURTURN = "It's your turn to guess!";
+    public static String HIT = "HIT!";
+    public static String MISS = "MISS!";
+    public static String IN_GRID = "All of your ships must be in the grid.";
+    public static String START = "PRESS SPACE TO BEGIN";
+    
     private Player player;
     private Board board;
     private Computer computer;
@@ -12,12 +20,12 @@ public class Game extends JPanel implements MouseListener,ActionListener
     private boolean selected = false;
     private JButton button;
     private JLabel turn;
-    private String yourTurn;
-    private String compTurn;
-    private String hit;
-    private String miss;
     private JLabel result;
     private JLabel error;
+    private JLabel titleBack;
+    private JLabel logo;
+    private JLabel begin;
+    private boolean begun;
 
     //constructor - sets the initial conditions for this Game object
     public Game(int width, int height)
@@ -32,41 +40,56 @@ public class Game extends JPanel implements MouseListener,ActionListener
         board = new Board();
         computer = new Computer();
         this.addMouseListener(this);//allows the program to respond to key presses - Don't change
-
-        String text = "DONE PLACING YOUR SHIPS?";
-
-        button = new JButton(text);
+        this.addKeyListener(this);
+        
+        button = new JButton(TEXT);
         button.setBounds(700,500,200,50);
         this.add(button);
-        button.setVisible(true);
+        button.setVisible(false);
         button.addActionListener(this);
 
-        compTurn = "The computer is guessing now.";
-        yourTurn = "It's your turn to guess!";
-
-        turn = new JLabel(yourTurn);
+        turn = new JLabel(YOURTURN);
         turn.setForeground(Color.WHITE);
         turn.setBounds(80,50,800,50);
         this.add(turn);
         turn.setVisible(false);
         turn.setFont(new Font("Courier New", Font.ITALIC, 36));
 
-        error = new JLabel("All of your ships must be in the grid.");
+        error = new JLabel(IN_GRID);
         error.setForeground(Color.WHITE);
         error.setBounds(80,50,800,50);
         this.add(error);
         error.setVisible(false);
         error.setFont(new Font("Courier New", Font.BOLD, 25));
 
-        hit = "HIT!";
-        miss = "MISS!";
         result = new JLabel();
         result.setForeground(Color.RED);
         result.setBounds(700, 700, 300, 80);
         this.add(result);
         result.setVisible(false);
         result.setFont(new Font("Courier New", Font.BOLD, 80));
-
+        
+        begin = new JLabel(START);
+        begin.setBounds(300, 500, 500,30);
+        begin.setForeground(Color.WHITE);
+        this.add(begin);
+        begin.setVisible(true);
+        begin.setFont(new Font("Courier New", Font.BOLD, 35));
+        
+        ImageIcon battleLogo = new ImageIcon("logo.jpg");
+        logo = new JLabel(battleLogo);
+        logo.setBounds(50,250,900,240);
+        this.add(logo);
+        logo.setVisible(true);
+        
+        ImageIcon iconLogo = new ImageIcon("boats.jpg");
+        titleBack = new JLabel(iconLogo);
+        titleBack.setBounds(0,0,1000,800);
+        this.add(titleBack);
+        titleBack.setVisible(true);
+        
+        begun = false;
+        
         this.setFocusable(true);//I'll tell you later - Don't change
     }
 
@@ -78,6 +101,8 @@ public class Game extends JPanel implements MouseListener,ActionListener
             try
             {
                 Thread.sleep( 200 );//pause for 200 milliseconds
+                if(!begun)
+                    begin.setVisible(!begin.isVisible());
             }catch( InterruptedException ex ){}
             if(error.isVisible() || result.isVisible())
                 try{
@@ -136,17 +161,17 @@ public class Game extends JPanel implements MouseListener,ActionListener
                 selected = player.move(x, y);
             }
         }
-        else if(clicked.inBounds()){
+        else if(clicked.checkBounds()){
             if((computer.bombHit(new Location(x, y)) == true)) //not sure if this is supposed to be this. We need to drop a bomb, and that bomb is what needs to call bombHit i think
             {
                 result.setForeground(Color.RED);
-                result.setText(hit);
+                result.setText(HIT);
                 result.setVisible(true);
                 board.placeHit(new Location(x,y));
             }
             else{
                 result.setForeground(new Color(200,200,200));
-                result.setText(miss);
+                result.setText(MISS);
                 result.setVisible(true);
                 board.placeMiss(new Location(x,y));
             }
@@ -162,20 +187,34 @@ public class Game extends JPanel implements MouseListener,ActionListener
     }
 
     public void changeText(){
-        if(turn.getText().equals(yourTurn))
-            turn.setText(compTurn);
+        if(turn.getText().equals(YOURTURN))
+            turn.setText(COMPTURN);
         else
-            turn.setText(yourTurn);
+            turn.setText(YOURTURN);
     }
 
     public void mouseReleased(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
     }
+    
+    public void keyReleased(KeyEvent e) {
+    }
+    
+    public void keyPressed(KeyEvent e) {
+        if( e.getKeyCode() == KeyEvent.VK_SPACE ){
+            titleBack.setVisible(false);
+            logo.setVisible(false);
+            begin.setVisible(false);
+            button.setVisible(true);
+            begun = true;
+        }
+    }
+    
+    public void keyTyped(KeyEvent e) {
+    }
 
     public void actionPerformed(ActionEvent event){
-        player.setInBounds();
-        computer.setInBounds();
         player.createLocs();
         computer.createLocs();
         if(player.outOfBounds())
