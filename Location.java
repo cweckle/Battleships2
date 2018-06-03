@@ -38,12 +38,11 @@ public class Location{
     }
 
     public boolean equals(Location check){
-        if(check.inBounds() && this.inBounds()){
+        if(check.checkBounds() && this.checkBounds())
             if(check.getGridX() == this.getGridX() && check.getGridY() == this.getGridY())
                 return true;
-        }
+
         else{
-            System.out.println("hiofeosif");
             if(check.getXVal() >= this.getXVal() && check.getXVal() <= this.getXVal() + 60*length)
                 if(check.getYVal() >= this.getYVal() && check.getYVal() <= this.getYVal() + 30){
                     System.out.println("hi2");
@@ -139,6 +138,10 @@ public class Location{
             num ++;
         }
         return -1;
+    }
+    
+    public String toString(){
+        return gridX + ", " + gridY;
     }
 
     public static String increment(String change){
